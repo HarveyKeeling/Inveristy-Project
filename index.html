@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gov.uk ChatBot</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
+        #chat-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .message-container {
+            margin: 10px 0;
+        }
+
+        .user {
+            color: #007bff;
+        }
+
+        .bot {
+            color: #28a745;
+        }
+
+        input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <h1>Garry the Gov.uk ChatBot</h1>
+        <div id="chat-content"></div>
+        <div class="message-container">
+            <input type="text" id="user-input" placeholder="Type your message...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+        
+    </div>
+
+    <script>
+        function sendMessage() {
+            var user_input = document.getElementById('user-input').value;
+            appendMessage('user', user_input);
+
+            // API call to the backend
+            fetch('/ask', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'user_input=' + encodeURIComponent(user_input),
+            })
+            .then(response => response.json())
+            .then(data => {
+                var bot_response = data.response;
+                appendMessage('Garry', bot_response);
+            });
+        }
+
+        function appendMessage(sender, message) {
+            var chatContent = document.getElementById('chat-content');
+            var messageElement = document.createElement('div');
+            messageElement.className = 'message-container ' + sender;
+            messageElement.innerHTML = `<strong>${sender}:</strong> ${message}`;
+            chatContent.appendChild(messageElement);
+            document.getElementById('user-input').value = '';
+        }
+    </script>
+</body>
+</html>
+
+
